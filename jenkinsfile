@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    triggers {
+        cron('* * * * *')
+    }
+    stages {
+        stage('zip the package') {
+            steps {
+                sh 'zip -r index.html-$BUILD_NUMBER.zip *'
+            }
+        }
+        stage('artifactory s3') {
+            steps {
+                sh 'aws s3 cp index.html-$BUILD_NUMBER.zip s3://anandmb/'
+            }
+        }
+    }
+}
